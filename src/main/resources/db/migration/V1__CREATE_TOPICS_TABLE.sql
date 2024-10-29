@@ -1,0 +1,4 @@
+CREATE TABLE topics (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    topic_name VARCHAR(64)
+);

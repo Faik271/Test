@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  test:
+    build: .
+    container_name: test
+    volumes:
+      - ~/.m2:/root/.m2  # Cache Maven dependencies for faster builds
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+    restart: unless-stopped
+    command: java -jar /app/Test.jar  # Run the built JAR file
+
+networks:
+  my-network:
+    driver: bridge
