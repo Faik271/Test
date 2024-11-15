@@ -2,9 +2,11 @@ package com.test.Test.entity.SimpleTest;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "simple_tests_answers")
-public class SimpleTestAnswerEntity {
+public class SimpleTestAnswerEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

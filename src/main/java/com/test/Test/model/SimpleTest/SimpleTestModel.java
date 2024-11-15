@@ -4,9 +4,11 @@ import com.test.Test.entity.SimpleTest.SimpleTestEntity;
 import com.test.Test.entity.SimpleTest.SimpleTestVariantEntity;
 import com.test.Test.entity.Topic.TopicEntity;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleTestModel {
+public class SimpleTestModel implements Serializable{
 
     private Long id;
 
@@ -14,12 +16,20 @@ public class SimpleTestModel {
 
     private TopicEntity topic;
 
-    private List<SimpleTestVariantEntity> simpleTestVariant;
+    private List<SimpleTestVariantsModel> simpleTestVariant;
 
     public SimpleTestModel toModel(SimpleTestEntity simpleTestEntity){
         SimpleTestModel simpleTestModel = new SimpleTestModel();
+        List<SimpleTestVariantsModel> newSimpleTestVariant =new ArrayList<>();
+        for(SimpleTestVariantEntity simpleTestVariantEntity : simpleTestEntity.getSimpleTestVariant()){
+            SimpleTestVariantsModel simpleTestVariantsModel = new SimpleTestVariantsModel();
+            simpleTestVariantsModel.setId(simpleTestVariantEntity.getId())
+                    .setContent(simpleTestVariantEntity.getContent())
+                    .setVariant(simpleTestVariantEntity.getVariant());
+            newSimpleTestVariant.add(simpleTestVariantsModel);
+        }
         simpleTestModel.setId(simpleTestEntity.getId()).setContent(simpleTestEntity.getContent())
-                .setTopic(simpleTestEntity.getTopic()).setSimpleTestVariant(simpleTestEntity.getSimpleTestVariant());
+                .setTopic(simpleTestEntity.getTopic()).setSimpleTestVariant(newSimpleTestVariant);
         return simpleTestModel;
 
     }
@@ -51,11 +61,11 @@ public class SimpleTestModel {
         return this;
     }
 
-    public List<SimpleTestVariantEntity> getSimpleTestVariant() {
+    public List<SimpleTestVariantsModel> getSimpleTestVariant() {
         return simpleTestVariant;
     }
 
-    public SimpleTestModel setSimpleTestVariant(List<SimpleTestVariantEntity> simpleTestVariant) {
+    public SimpleTestModel setSimpleTestVariant(List<SimpleTestVariantsModel> simpleTestVariant) {
         this.simpleTestVariant = simpleTestVariant;
         return this;
     }

@@ -22,6 +22,8 @@ import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +67,7 @@ public class SimpleTestService {
 
     }
 
+    @CacheEvict(value = "test", allEntries = true)
     public void createSimpleTest(SimpleTestDto simpleTest)
     {
             //create test itself
@@ -108,6 +111,7 @@ public class SimpleTestService {
 
 
     @Transactional
+    @CacheEvict(value = "test", allEntries = true)
     public boolean updateSimpleTest(SimpleTestDto simpleTest, Long id)
     {
         //check if test exists (if it does not exist then response will be 404)
@@ -182,6 +186,8 @@ public class SimpleTestService {
         return new LinkedHashSet<>(shuffledList);
     }
 
+    @Transactional
+    @Cacheable(value = "test")
     public List<SimpleTestModel> getAllSimpleTests()
     {
         return simpleTestRepo.findAll().stream().map(entity -> {
@@ -192,6 +198,7 @@ public class SimpleTestService {
     }
 
     @Transactional
+    @CacheEvict(value = "test", allEntries = true)
     public void deleteSimpleTest(List<Long> ids)
     {
         simpleTestRepo.deleteAllByIdIn(ids);

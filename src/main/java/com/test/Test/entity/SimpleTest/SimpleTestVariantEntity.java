@@ -1,11 +1,14 @@
 package com.test.Test.entity.SimpleTest;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "simple_tests_variants")
-public class SimpleTestVariantEntity {
+public class SimpleTestVariantEntity implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

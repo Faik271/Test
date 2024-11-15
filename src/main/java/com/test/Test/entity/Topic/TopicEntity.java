@@ -4,11 +4,12 @@ package com.test.Test.entity.Topic;
 import com.test.Test.entity.SimpleTest.SimpleTestEntity;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "topics")
-public class TopicEntity {
+public class TopicEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

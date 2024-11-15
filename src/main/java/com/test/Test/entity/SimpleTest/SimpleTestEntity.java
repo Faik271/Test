@@ -5,11 +5,12 @@ import com.test.Test.entity.Topic.TopicEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "simple_tests")
-public class SimpleTestEntity {
+public class SimpleTestEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +25,6 @@ public class SimpleTestEntity {
     @Getter
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "simpleTest")
     private List<SimpleTestVariantEntity> simpleTestVariant;
-
-
-
 
     @OneToOne(mappedBy = "simpleTest", cascade = CascadeType.ALL, orphanRemoval = true)
     private SimpleTestAnswerEntity simpleTestAnswerEntity;
