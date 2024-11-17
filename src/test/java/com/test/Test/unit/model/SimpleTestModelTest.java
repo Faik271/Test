@@ -61,19 +61,33 @@ public class SimpleTestModelTest {
         SimpleTestEntity entity = new SimpleTestEntity();
         entity.setId(1L);
         entity.setContent("Test content");
-
         TopicEntity topic = new TopicEntity();
         entity.setTopic(topic);
-
         List<SimpleTestVariantEntity> variants = new ArrayList<>();
         variants.add(new SimpleTestVariantEntity());
         entity.setSimpleTestVariant(variants);
 
-        SimpleTestModel model = new SimpleTestModel().toModel(entity);
 
+        SimpleTestModel model = new SimpleTestModel().toModel(entity);
         assertEquals(entity.getId(), model.getId());
         assertEquals(entity.getContent(), model.getContent());
         assertEquals(entity.getTopic(), model.getTopic());
-//        assertEquals(entity.getSimpleTestVariant(), model.getSimpleTestVariant());
+        variantsToModel(entity.getSimpleTestVariant(), model.getSimpleTestVariant());
+
+    }
+
+    private void variantsToModel(List<SimpleTestVariantEntity> variants, List<SimpleTestVariantsModel> variantsModels) {
+
+        assertEquals(variants.size(), variantsModels.size(), "The sizes of the lists do not match");
+
+        for (int i = 0; i < variants.size(); i++) {
+            SimpleTestVariantEntity variantEntity = variants.get(i);
+            SimpleTestVariantsModel variantModel = variantsModels.get(i);
+
+            assertEquals(variantEntity.getId(), variantModel.getId(), "Mismatch in 'id' at index " + i);
+            assertEquals(variantEntity.getContent(), variantModel.getContent(), "Mismatch in 'content' at index " + i);
+            assertEquals(variantEntity.getVariant(), variantModel.getVariant(), "Mismatch in 'option' at index " + i);
+        }
+
     }
 }

@@ -67,7 +67,7 @@ public class SimpleTestService {
 
     }
 
-    @CacheEvict(value = "test", allEntries = true)
+    @CacheEvict(value = "allTests", allEntries = true)
     public void createSimpleTest(SimpleTestDto simpleTest)
     {
             //create test itself
@@ -111,7 +111,7 @@ public class SimpleTestService {
 
 
     @Transactional
-    @CacheEvict(value = "test", allEntries = true)
+    @CacheEvict(value = "allTests", allEntries = true)
     public boolean updateSimpleTest(SimpleTestDto simpleTest, Long id)
     {
         //check if test exists (if it does not exist then response will be 404)
@@ -186,8 +186,7 @@ public class SimpleTestService {
         return new LinkedHashSet<>(shuffledList);
     }
 
-    @Transactional
-    @Cacheable(value = "test")
+    @Cacheable(value = "allTests")
     public List<SimpleTestModel> getAllSimpleTests()
     {
         return simpleTestRepo.findAll().stream().map(entity -> {
@@ -198,7 +197,7 @@ public class SimpleTestService {
     }
 
     @Transactional
-    @CacheEvict(value = "test", allEntries = true)
+    @CacheEvict(value = "allTests", allEntries = true)
     public void deleteSimpleTest(List<Long> ids)
     {
         simpleTestRepo.deleteAllByIdIn(ids);
