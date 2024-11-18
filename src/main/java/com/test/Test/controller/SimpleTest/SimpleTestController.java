@@ -4,6 +4,7 @@ import com.test.Test.constant.MessageConstant;
 import com.test.Test.dto.SimpleTest.CheckTestAnswersDto;
 import com.test.Test.dto.SimpleTest.SimpleTestDeleteDto;
 import com.test.Test.dto.SimpleTest.SimpleTestDto;
+import com.test.Test.model.SimpleTest.SimpleTestModel;
 import com.test.Test.service.SimpleTest.SimpleTestService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -52,6 +53,21 @@ public class SimpleTestController {
             if(simpleTestService.updateSimpleTest(simpleTest, id)){
                 String successMessage = MessageConstant.Http.Test.updated;
                 return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+            }
+            return ResponseEntity.notFound().build();
+        }catch (Exception exception){
+            logInfo.error(exception.getMessage());
+            String errorMessage = MessageConstant.Http.server_error;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getTestById(@PathVariable Long id){
+        try {
+            SimpleTestModel simpleTestEntity = simpleTestService.getTestById(id);
+            if(simpleTestEntity != null){
+                return ResponseEntity.status(HttpStatus.OK).body(simpleTestEntity);
             }
             return ResponseEntity.notFound().build();
         }catch (Exception exception){

@@ -8,6 +8,7 @@ import com.test.Test.controller.SimpleTest.SimpleTestController;
 import com.test.Test.dto.SimpleTest.*;
 import com.test.Test.entity.SimpleTest.SimpleTestAnswerEntity;
 import com.test.Test.entity.SimpleTest.SimpleTestEntity;
+import com.test.Test.model.SimpleTest.SimpleTestModel;
 import com.test.Test.model.SimpleTest.SimpleTestsFinalResultModel;
 import com.test.Test.repository.SimpleTest.SimpleTestRepo;
 import com.test.Test.repository.Topic.TopicRepo;
@@ -223,6 +224,23 @@ public class SimpleTestIntegrationTest {
         for(int i = 0; i < size; i++) {
             assertEquals(fakeTests.get(i).getContent(), returnedSimpleTestList.get(i).getContent());
         }
+
+    }
+
+    @Test
+    public void testGetSimpleTestById() throws Exception {
+        SimpleTestEntity fakeTests = createFakeSimpleTests(1).get(0);
+        MvcResult result = mockMvc.perform(get(ApiRout.GET_SIMPLE_TEST_BY_ID.getUrl(), fakeTests.getId()).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+        String jsonResponse = result.getResponse().getContentAsString();
+        SimpleTestModel returnedSimpleTest = objectMapper.readValue(jsonResponse, new TypeReference<SimpleTestModel>() {});
+        assertEquals(fakeTests.getContent(), returnedSimpleTest.getContent());
+    }
+
+    @Test
+    public void testGetSimpleTestByIdNotFound() throws Exception {
+        mockMvc.perform(get(ApiRout.GET_SIMPLE_TEST_BY_ID.getUrl(), -1).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound()).andReturn();
 
     }
 

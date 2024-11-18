@@ -18,11 +18,14 @@ import com.test.Test.repository.SimpleTest.SimpleTestAnswerRepo;
 import com.test.Test.repository.SimpleTest.SimpleTestRepo;
 import com.test.Test.repository.SimpleTest.SimpleTestVariantRepo;
 import com.test.Test.repository.Topic.TopicRepo;
+import org.springframework.cache.Cache;
 import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +52,9 @@ public class SimpleTestService {
     private SimpleTestAnswerRepo simpleTestAnswerRepo;
 
     @Autowired private EntityManager entityManager;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Transactional
     public void createAllTopics()
@@ -112,6 +118,7 @@ public class SimpleTestService {
 
     @Transactional
     @CacheEvict(value = "allTests", allEntries = true)
+    @CachePut(value = "test", key = "#id")
     public boolean updateSimpleTest(SimpleTestDto simpleTest, Long id)
     {
         //check if test exists (if it does not exist then response will be 404)
@@ -159,6 +166,17 @@ public class SimpleTestService {
         return simpleTestAnswerEntity;
     }
 
+    @Cacheable(value = "test", key = "#id", unless = "#result == null")
+    public SimpleTestModel getTestById(Long id){
+        Optional<SimpleTestEntity> testEntity = simpleTestRepo.findById(id);
+        if(testEntity.isPresent()) {
+            SimpleTestModel simpleTestModel = new SimpleTestModel();
+            SimpleTestModel test = simpleTestModel.toModel(testEntity.get());
+            return test;
+        }
+        return null;
+    }
+
     public Set<SimpleTestEntity> generateExam()
     {
         //get all topics
@@ -181,8 +199,6 @@ public class SimpleTestService {
         // Shuffle the randomTests set by converting it to a List first
         List<SimpleTestEntity> shuffledList = new ArrayList<>(randomTests);
         Collections.shuffle(shuffledList);
-
-        logInfo.info(String.valueOf(shuffledList.size()));
         return new LinkedHashSet<>(shuffledList);
     }
 
@@ -200,6 +216,12 @@ public class SimpleTestService {
     @CacheEvict(value = "allTests", allEntries = true)
     public void deleteSimpleTest(List<Long> ids)
     {
+        ids.forEach(id -> {
+            Cache cache = cacheManager.getCache("test");
+            if (cache != null) {
+                cache.evict(id);
+            }
+        });
         simpleTestRepo.deleteAllByIdIn(ids);
     }
 
